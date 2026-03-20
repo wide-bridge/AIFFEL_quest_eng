@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BabyCoach</title>
+    <style>
+      :root{
+        --bg:#F8FAFF;
+        --card:#FFFFFF;
+        --text:#333333;
+        --muted:#6B7280;
+        --point:#7AA7FF;
+        --point2:#FFB6C1;
+        --border:rgba(0,0,0,.08);
+        --shadow: 0 10px 26px rgba(16,24,40,.10);
+        --radius:18px;
+      }
+      body{
+        margin:0;
+        background:
+          radial-gradient(900px 450px at 20% 0%, rgba(122,167,255,.18), transparent 60%),
+          radial-gradient(900px 450px at 90% 10%, rgba(255,182,193,.22), transparent 55%),
+          var(--bg);
+        color:var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial;
+      }
+      .wrap{max-width:1100px; margin:0 auto; padding:18px;}
+      /* Mobile-first layout */
+      .wrap{max-width:480px; margin:0 auto; padding:14px; min-height:100vh; display:flex; flex-direction:column;}
+      .header{
+        background: rgba(255,255,255,.75);
+        border:1px solid var(--border);
+        border-radius:var(--radius);
+        padding:14px 14px;
+        box-shadow: var(--shadow);
+        display:flex; align-items:center; gap:12px;
+      }
+      .logo{display:flex; align-items:center; gap:12px; flex:1;}
+      .logo img{height:42px; width:auto;}
+      .titlebox{display:flex; flex-direction:column; line-height:1.1;}
+      .titlebox .t1{font-weight:950; font-size:16px;}
+      .titlebox .t2{color:var(--muted); font-size:12px; margin-top:4px;}
+
+      .hero{margin-top:14px;}
+      .hero img{width:100%; height:120px; object-fit:cover; display:block; border-radius:var(--radius);}
+
+      .tabs{
+        margin-top:14px;
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        justify-content:flex-start;
+      }
+      .tabBtn{
+        border:1px solid rgba(122,167,255,.35);
+        background: rgba(122,167,255,.12);
+        color:var(--text);
+        border-radius:999px;
+        padding:12px 16px;
+        font-weight:900;
+        cursor:pointer;
+        touch-action: manipulation;
+        min-height:46px;
+      }
+      .tabBtn.active{
+        background: linear-gradient(90deg, rgba(122,167,255,.35), rgba(255,182,193,.25));
+        border-color: rgba(122,167,255,.65);
+      }
+
+      .section{
+        margin-top:14px;
+        background: rgba(255,255,255,.78);
+        border:1px solid var(--border);
+        border-radius:var(--radius);
+        box-shadow: var(--shadow);
+        padding:14px;
+      }
+
+      .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+      .col{flex:1; min-width:240px;}
+      label{color:var(--muted); font-size:12px; font-weight:900;}
+
+      input[type="range"]{width:100%;}
+      input[type="number"], input[type="text"], textarea{
+        width:100%;
+        background: rgba(255,255,255,.95);
+        color:var(--text);
+        border:1px solid var(--border);
+        border-radius:14px;
+        padding:12px 12px;
+        outline:none;
+        box-sizing:border-box;
+      }
+      textarea{min-height:86px; resize:vertical;}
+
+      .pill{
+        border:1px solid var(--border);
+        background: #F2F4FF;
+        border-radius:999px;
+        padding:12px 14px;
+        color:var(--text);
+        font-size:13px;
+        cursor:pointer;
+        user-select:none;
+        font-weight:900;
+        touch-action: manipulation;
+      }
+      .pill.active{
+        background: rgba(122,167,255,.24);
+        border-color: rgba(122,167,255,.55);
+      }
+      .pill.danger{
+        background: rgba(255,182,193,.18);
+        border-color: rgba(255,182,193,.60);
+      }
+
+      .btn{
+        width:100%;
+        padding:14px 14px;
+        border-radius:16px;
+        border: 1px solid rgba(122,167,255,.55);
+        background: rgba(122,167,255,.15);
+        color:var(--text);
+        font-weight:900;
+        cursor:pointer;
+        min-height:50px;
+        touch-action: manipulation;
+      }
+      .btn.primary{
+        background: linear-gradient(90deg, rgba(122,167,255,.40), rgba(255,182,193,.22));
+        border-color: rgba(122,167,255,.70);
+      }
+      .btn:disabled{opacity:.65; cursor:not-allowed;}
+      .btn.small{
+        width:auto;
+        min-height:auto;
+        padding:10px 12px;
+        border-radius:14px;
+      }
+      .note{color:var(--muted); font-size:12px; margin-top:8px; line-height:1.5;}
+
+      .cards{
+        display:grid;
+        grid-template-columns: 1fr;
+        gap:12px;
+      }
+      @media(min-width:760px){
+        .cards{grid-template-columns: 1fr 1fr;}
+      }
+      .result-card{
+        background: var(--card);
+        border:1px solid var(--border);
+        border-radius:var(--radius);
+        padding:12px;
+      }
+      .card-top{
+        display:flex; align-items:center; gap:10px; margin-bottom:8px;
+      }
+      .iconbox{
+        width:42px; height:42px;
+        border-radius:16px;
+        display:flex; align-items:center; justify-content:center;
+        background: rgba(122,167,255,.15);
+        border:1px solid rgba(122,167,255,.30);
+      }
+      .iconbox img{width:22px; height:22px;}
+      .result-title{font-weight:950;}
+      .bigmsg{font-weight:900; font-size:14px; margin-top:6px;}
+      .muted{color:var(--muted); font-size:12px; line-height:1.5;}
+
+      .chatbox{
+        border:1px solid var(--border);
+        border-radius:var(--radius);
+        background: rgba(255,255,255,.92);
+        padding:12px;
+        min-height:0;
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+      }
+      .chatHead{
+        padding:6px 2px 2px 2px;
+      }
+      .chatTitle{
+        font-weight:950;
+        font-size:16px;
+        line-height:1.2;
+      }
+      .chatSubtitle{
+        margin-top:4px;
+        color:var(--muted);
+        font-size:12px;
+        line-height:1.3;
+      }
+      .chatmsgs{
+        flex:1;
+        min-height:0;
+        overflow:auto;
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+      }
+      .chatInputBar{
+        margin-top:auto;
+        position: relative;
+        background: rgba(255,255,255,.97);
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+      }
+      .chatErrorLine{
+        margin-top:8px;
+        color:#b42318;
+        font-size:12px;
+        line-height:1.4;
+        display:none;
+      }
+      .bubble{
+        padding:12px 12px;
+        border-radius:16px;
+        border:1px solid rgba(0,0,0,.04);
+        max-width:100%;
+        font-size:14px;
+        line-height:1.5;
+        word-break: break-word;
+      }
+      .bubble.system{
+        background: rgba(122,167,255,.10);
+        border-color: rgba(122,167,255,.25);
+        align-self:flex-start;
+        font-size:12px;
+        padding:10px 12px;
+        border-radius:14px;
+      }
+      .bubble.user{
+        background: rgba(122,167,255,.14);
+        border-color: rgba(122,167,255,.30);
+        align-self:flex-end;
+      }
+      .bubble.assistant{
+        background: rgba(255,255,255,.96);
+        border-color: rgba(255,182,193,.35);
+        align-self:flex-start;
+      }
+      .chatinputrow{display:flex; gap:10px;}
+      .chatinputrow input{flex:1;}
+      #chatUserMessage{border-radius:999px;}
+      .hr{height:1px; background: var(--border); margin:10px 0;}
+      .twoCol{
+        display:grid;
+        grid-template-columns: 1fr;
+        gap:12px;
+      }
+      @media(min-width:980px){
+        .twoCol{grid-template-columns: 1fr 420px;}
+      }
+      .expDetails details{margin-top:8px;}
+      .expDetails summary{
+        cursor:pointer;
+        font-weight:950;
+        color:var(--muted);
+      }
+
+      /* Chat tab should be mobile focused */
+      #tabChat{
+        display:flex;
+        flex-direction:column;
+        flex:1;
+        min-height:0;
+      }
+
+      .emptyActions{
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        padding:6px 2px 2px 2px;
+      }
+      .todayNudge{
+        background: rgba(255,182,193,.18);
+        border:1px solid rgba(255,182,193,.35);
+        border-radius:999px;
+        padding:10px 12px;
+        font-size:13px;
+        line-height:1.3;
+        color:#374151;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+      .exampleButtons{
+        display:flex;
+        gap:10px;
+        flex-direction:column;
+      }
+      .exampleBtn{
+        width:100%;
+        text-align:left;
+        border-radius:999px;
+        padding:12px 14px;
+        border:1px solid rgba(122,167,255,.28);
+        background: rgba(122,167,255,.10);
+        font-weight:900;
+        cursor:pointer;
+        touch-action: manipulation;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="header">
+        <div class="logo">
+          <img id="logoImg" src="/assets/logo_babycoach.svg" alt="BabyCoach 로고"
+               onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;420&quot; height=&quot;120&quot; viewBox=&quot;0 0 420 120&quot;><rect width=&quot;420&quot; height=&quot;120&quot; rx=&quot;22&quot; fill=&quot;%237c5cff&quot;/><text x=&quot;50%25&quot; y=&quot;65%25&quot; dominant-baseline=&quot;middle&quot; text-anchor=&quot;middle&quot; font-family=&quot;Arial&quot; font-size=&quot;34&quot; fill=&quot;white&quot; font-weight=&quot;800&quot;>BabyCoach</text></svg>';" />
+        </div>
+      </div>
+
+      <div class="hero">
+        <img src="/assets/hero_babycoach.svg" alt="Hero 배너"
+             onerror="this.onerror=null; this.style.display='none';" />
+      </div>
+
+      <div class="tabs">
+        <button class="tabBtn active" id="tabBtnChat" onclick="ui.switchTab('chat')">Chat</button>
+        <button class="tabBtn" id="tabBtnSpoon" onclick="ui.switchTab('spoon')">Spoon</button>
+        <button class="tabBtn" id="tabBtnPlay" onclick="ui.switchTab('play')">Play</button>
+        <button class="tabBtn" id="tabBtnDash" onclick="ui.switchTab('dash')">대시보드</button>
+        <button class="tabBtn" id="tabBtnMore" onclick="ui.switchTab('more')">더보기</button>
+      </div>
+
+      <!-- CHAT -->
+      <div class="section" id="tabChat" style="display:block;">
+        <div class="chatbox">
+          <div class="chatHead">
+            <div class="chatTitle">BabyCoach Chat</div>
+            <div class="chatSubtitle">아이 상태를 바탕으로 코칭해요</div>
+          </div>
+          <div class="chatmsgs" id="chatMsgs"></div>
+          <div class="chatInputBar">
+            <div class="chatinputrow" style="margin-top:0;">
+              <input id="chatUserMessage" type="text" placeholder="추천에 대해 무엇이 궁금해?" />
+              <button class="btn small" id="chatSendBtn" onclick="ui.submitChat()">전송</button>
+            </div>
+            <div class="chatErrorLine" id="chatError"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPOON -->
+      <div class="section" id="tabSpoon" style="display:none;">
+        <div style="font-weight:950; font-size:16px; margin-bottom:8px;">Spoon 입력 (식사 상태)</div>
+        <div class="result-card">
+          <label>단백질 단계 (0~3)</label>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill" onclick="ui.setStage('protein_count_3d',0)">0회</div>
+            <div class="pill" onclick="ui.setStage('protein_count_3d',1)">1회</div>
+            <div class="pill" onclick="ui.setStage('protein_count_3d',2)">2회</div>
+            <div class="pill" onclick="ui.setStage('protein_count_3d',3)">3회 이상</div>
+          </div>
+          <div class="note" id="proteinHint">단백질: 2</div>
+
+          <label style="margin-top:12px; display:block;">채소 단계 (0~3)</label>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill" onclick="ui.setStage('vegetable_count_3d',0)">0회</div>
+            <div class="pill" onclick="ui.setStage('vegetable_count_3d',1)">1회</div>
+            <div class="pill" onclick="ui.setStage('vegetable_count_3d',2)">2회</div>
+            <div class="pill" onclick="ui.setStage('vegetable_count_3d',3)">3회 이상</div>
+          </div>
+          <div class="note" id="vegHint">채소: 1</div>
+
+          <label style="margin-top:12px; display:block;">영양 다양성 (1~10)</label>
+          <div class="note" id="divHint">다양성: 6점</div>
+          <input id="food_diversity_3d" type="range" min="1" max="10" value="6" step="1" oninput="ui.setSlider('food_diversity_3d',this.value,'divHint','다양성: ${v}점')"/>
+
+          <label style="margin-top:12px; display:block;">식사 태그</label>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill" data-singlekey="food_tag" onclick="ui.selectSingle('food_tag','단백질 중심')">단백질 중심</div>
+            <div class="pill" data-singlekey="food_tag" onclick="ui.selectSingle('food_tag','채소 중심')">채소 중심</div>
+            <div class="pill active" data-singlekey="food_tag" onclick="ui.selectSingle('food_tag','다양성 중심')">다양성 중심</div>
+          </div>
+
+          <label style="margin-top:12px; display:block;">식사 반응</label>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill active" data-singlekey="meal_reaction" onclick="ui.selectSingle('meal_reaction','괜찮아요')">괜찮아요</div>
+            <div class="pill" data-singlekey="meal_reaction" onclick="ui.selectSingle('meal_reaction','조심스러워요')">조심스러워요</div>
+            <div class="pill" data-singlekey="meal_reaction" onclick="ui.selectSingle('meal_reaction','거부 신호')">거부 신호</div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <div class="pill danger" id="meal_refusal_pill" onclick="ui.toggleBool('meal_refusal')">식사 거부가 있었어요</div>
+          </div>
+
+          <label style="margin-top:12px; display:block;">반응 플래그 (다중 선택)</label>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill" onclick="ui.toggleMulti('reaction_flags','발진')">발진</div>
+            <div class="pill" onclick="ui.toggleMulti('reaction_flags','구토')">구토</div>
+            <div class="pill" onclick="ui.toggleMulti('reaction_flags','설사')">설사</div>
+            <div class="pill" onclick="ui.toggleMulti('reaction_flags','변비')">변비</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <button class="btn primary" onclick="ui.submitRecommendFromUI('spoon')">Spoon 추천 받기</button>
+          <div class="note" id="spoonStatus"></div>
+        </div>
+      </div>
+
+      <!-- PLAY -->
+      <div class="section" id="tabPlay" style="display:none;">
+        <div style="font-weight:950; font-size:16px; margin-bottom:8px;">Play 입력 (놀이 + 교감)</div>
+        <div class="result-card">
+          <label>놀이 유형 (다중 선택)</label>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill" onclick="ui.toggleMulti('play_types','촉감 놀이')">촉감 놀이</div>
+            <div class="pill" onclick="ui.toggleMulti('play_types','딸랑이 흔들기')">딸랑이 흔들기</div>
+            <div class="pill" onclick="ui.toggleMulti('play_types','넣기/빼기')">넣기/빼기</div>
+            <div class="pill" onclick="ui.toggleMulti('play_types','쌓기 놀이')">쌓기 놀이</div>
+            <div class="pill" onclick="ui.toggleMulti('play_types','버튼 누르기')">버튼 누르기</div>
+            <div class="pill" onclick="ui.toggleMulti('play_types','시각 추적')">시각 추적</div>
+          </div>
+
+          <label style="margin-top:12px; display:block;">놀이 집중 레벨</label>
+          <div class="note" id="focusLevelText">집중: 중간</div>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill" data-focuslevel="낮음" onclick="ui.setFocusLevel('낮음')">낮음</div>
+            <div class="pill active" data-focuslevel="중간" onclick="ui.setFocusLevel('중간')">중간</div>
+            <div class="pill" data-focuslevel="높음" onclick="ui.setFocusLevel('높음')">높음</div>
+          </div>
+
+          <label style="margin-top:12px; display:block;">반복 시도 횟수 (0~10)</label>
+          <div class="note" id="repeatHint">반복: 3</div>
+          <input id="repeat_count" type="range" min="0" max="10" value="3" step="1" oninput="ui.setSlider('repeat_count',this.value,'repeatHint','반복: ${v}')"/>
+
+          <label style="margin-top:12px; display:block;">아이 주도 비율 (0.0~1.0)</label>
+          <div class="note" id="ledHint">아이 주도: 0.40</div>
+          <input id="child_led_ratio" type="range" min="0" max="1" value="0.4" step="0.01" oninput="ui.setSlider('child_led_ratio',this.value,'ledHint','아이 주도: ${v}')"/>
+
+          <label style="margin-top:12px; display:block;">놀이를 거부했어요</label>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill danger" id="refusal_pill" onclick="ui.toggleBool('refusal')">놀이를 거부했어요</div>
+          </div>
+
+          <label style="margin-top:12px; display:block;">부모 메모</label>
+          <input id="parent_note" type="text" placeholder="예: 손으로 만지고 흔드는 걸 좋아함" oninput="ui.setText('parent_note',this.value)"/>
+        </div>
+
+        <div class="result-card" style="margin-top:12px;">
+          <label>스킨십/터치 빈도 (0~10)</label>
+          <div class="note" id="touchHint">터치: 3</div>
+          <input type="range" min="0" max="10" value="3" step="1" oninput="ui.setSlider('touch_count',this.value,'touchHint','터치: ${v}')"/>
+
+          <label style="margin-top:12px; display:block;">말 걸기/이름 붙여주기 빈도 (0~10)</label>
+          <div class="note" id="labelHint">말 걸기: 2</div>
+          <input type="range" min="0" max="10" value="2" step="1" oninput="ui.setSlider('labeling_count',this.value,'labelHint','말 걸기: ${v}')"/>
+
+          <label style="margin-top:12px; display:block;">같이 보고 반응한 횟수 (0~10)</label>
+          <div class="note" id="jointHint">같이 보기: 4</div>
+          <input type="range" min="0" max="10" value="4" step="1" oninput="ui.setSlider('joint_attention_count',this.value,'jointHint','같이 보기: ${v}')"/>
+
+          <label style="margin-top:12px; display:block;">아기 반응에 맞춘 주고받기 (0~10)</label>
+          <div class="note" id="respHint">주고받기: 2</div>
+          <input type="range" min="0" max="10" value="2" step="1" oninput="ui.setSlider('responsive_turns',this.value,'respHint','주고받기: ${v}')"/>
+
+          <label style="margin-top:12px; display:block;">오늘은 반응이 전반적으로 적었어요</label>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill danger" id="flat_response_pill" onclick="ui.toggleBool('flat_response')">반응이 적었어요</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <button class="btn primary" onclick="ui.submitRecommendFromUI('play')">Play 추천 받기</button>
+          <div class="note" id="playStatus"></div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="section" id="tabDash" style="display:none;">
+        <div style="font-weight:950; font-size:16px; margin-bottom:8px;">대시보드</div>
+        <div class="note" id="dashMissing" style="display:block; margin-top:12px; color:#b42318;">
+          아직 추천 결과가 없어요.
+        </div>
+        <div id="dashCards" style="display:none; margin-top:12px; flex-direction:column; gap:12px;"></div>
+      </div>
+
+      <!-- MORE -->
+      <div class="section" id="tabMore" style="display:none;">
+        <div style="font-weight:950; font-size:16px; margin-bottom:8px;">더보기 (아기 기본 정보)</div>
+        <div class="result-card">
+          <label>월령 (0~36개월)</label>
+          <div class="note" id="ageHint">10개월</div>
+          <input id="age_months" type="range" min="0" max="36" value="10" step="1" oninput="ui.setSlider('age_months',this.value,'ageHint','${v}개월')"/>
+
+          <label style="margin-top:12px; display:block;">체중 (kg)</label>
+          <div class="note" id="weightHint">8.7 kg</div>
+          <input id="weight_kg" type="number" min="0" max="50" value="8.7" step="0.1" oninput="ui.setSlider('weight_kg',this.value,'weightHint','${v} kg')"/>
+
+          <label style="margin-top:12px; display:block;">알레르기 (다중 선택)</label>
+          <div class="row" style="margin-top:8px;">
+            <div class="pill" onclick="ui.toggleAllergy('달걀흰자')">달걀흰자</div>
+            <div class="pill" onclick="ui.toggleAllergy('우유')">우유</div>
+            <div class="pill" onclick="ui.toggleAllergy('대두')">대두</div>
+            <div class="pill" onclick="ui.toggleAllergy('견과류')">견과류</div>
+          </div>
+
+          <label style="margin-top:12px; display:block;">메모</label>
+          <textarea id="notes" placeholder="예: 새로운 음식은 조심스럽게 도입 중" oninput="ui.setText('notes',this.value)"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      const ui = {
+        tab: 'chat',
+        final_output: null,
+        chatState: { message: '' },
+        state: {
+          child_profile: { age_months: 10, weight_kg: 8.7, allergies: [], notes: "" },
+          spoon_input: {
+            protein_count_3d: 2,
+            vegetable_count_3d: 1,
+            food_diversity_3d: 6,
+            food_tag: "다양성 중심",
+            meal_reaction: "괜찮아요",
+            meal_refusal: false,
+            reaction_flags: []
+          },
+          play_input: {
+            play_types: [],
+            play_focus_level: "중간",
+            focus_minutes: 10,
+            repeat_count: 3,
+            child_led_ratio: 0.4,
+            refusal: false,
+            parent_note: "",
+            touch_count: 3,
+            labeling_count: 2,
+            joint_attention_count: 4,
+            responsive_turns: 2,
+            flat_response: false
+          }
+        },
+        fallbackFinalOutput(){
+          return {
+            spoon: { title:'Spoon', suggestions:[], notes:'' },
+            play: { title:'Play', suggestions:[], notes:'' },
+            growth: { title:'Growth', observation_points:[] },
+            nudge: { title:'오늘의 한 문장 코칭', nudge_message:'오늘은 아이 신호에 맞춰 짧게 다시 시도해보세요.', tags:[] },
+            explanation: { title:'설명', explanation:'' },
+            chat_context_summary: ''
+          };
+        },
+
+        switchTab(t){
+          const map = {chat:'tabChat', spoon:'tabSpoon', play:'tabPlay', dash:'tabDash', more:'tabMore'};
+          Object.entries(map).forEach(([k,id])=>{
+            document.getElementById(id).style.display = (k===t) ? 'block' : 'none';
+          });
+          document.getElementById('tabBtnChat').classList.toggle('active', t==='chat');
+          document.getElementById('tabBtnSpoon').classList.toggle('active', t==='spoon');
+          document.getElementById('tabBtnPlay').classList.toggle('active', t==='play');
+          document.getElementById('tabBtnDash').classList.toggle('active', t==='dash');
+          document.getElementById('tabBtnMore').classList.toggle('active', t==='more');
+        },
+
+        setSlider(key, value, hintId, template){
+          let obj = null;
+          if (key in this.state.child_profile) obj = this.state.child_profile;
+          else if (key in this.state.play_input) obj = this.state.play_input;
+          else obj = this.state.spoon_input;
+
+          const v = Number(value);
+          obj[key] = v;
+
+          if (hintId){
+            const tpl = template || '';
+            if (tpl.includes('${v}')){
+              document.getElementById(hintId).textContent = tpl.replace('${v}', String(v.toFixed ? v.toFixed(2) : v));
+            }else{
+              document.getElementById(hintId).textContent = tpl ? (tpl + v) : String(v);
+            }
+          }
+          console.log('[input]', key, v);
+        },
+
+        setText(key, value){
+          let obj = null;
+          if (key in this.state.child_profile) obj = this.state.child_profile;
+          else obj = this.state.play_input;
+          obj[key] = value;
+          console.log('[input]', key, value);
+        },
+
+        setStage(key, v){
+          this.state.spoon_input[key] = Number(v);
+          console.log('[input]', key, v);
+          if (key === 'protein_count_3d') document.getElementById('proteinHint').textContent = '단백질: ' + v;
+          if (key === 'vegetable_count_3d') document.getElementById('vegHint').textContent = '채소: ' + v;
+        },
+
+        selectSingle(key, value){
+          document.querySelectorAll('[data-singlekey="'+key+'"]').forEach(e => e.classList.remove('active'));
+          const match = [...document.querySelectorAll('[data-singlekey="'+key+'"]')].find(e => (e.textContent||'').trim() === value);
+          if (match) match.classList.add('active');
+
+          if (key in this.state.spoon_input) this.state.spoon_input[key] = value;
+
+          if (key === 'meal_reaction'){
+            const isRefusal = value === '거부 신호';
+            this.state.spoon_input.meal_refusal = isRefusal;
+            document.getElementById('meal_refusal_pill').classList.toggle('active', isRefusal);
+          }
+          console.log('[input]', key, value);
+        },
+
+        toggleBool(key){
+          if (key in this.state.spoon_input){
+            this.state.spoon_input[key] = !this.state.spoon_input[key];
+            console.log('[input]', key, this.state.spoon_input[key]);
+            if (key === 'meal_refusal'){
+              const mv = this.state.spoon_input[key] ? '거부 신호' : '괜찮아요';
+              this.state.spoon_input.meal_reaction = mv;
+              document.querySelectorAll('[data-singlekey="meal_reaction"]').forEach(e => e.classList.remove('active'));
+              const match = [...document.querySelectorAll('[data-singlekey="meal_reaction"]')].find(e => (e.textContent||'').trim() === mv);
+              if (match) match.classList.add('active');
+              document.getElementById('meal_refusal_pill').classList.toggle('active', this.state.spoon_input[key]);
+            }
+          }else{
+            this.state.play_input[key] = !this.state.play_input[key];
+            console.log('[input]', key, this.state.play_input[key]);
+            if (key === 'refusal') document.getElementById('refusal_pill').classList.toggle('active', this.state.play_input[key]);
+            if (key === 'flat_response') document.getElementById('flat_response_pill').classList.toggle('active', this.state.play_input[key]);
+          }
+        },
+
+        toggleMulti(key, value){
+          const host = (key in this.state.play_input) ? this.state.play_input : this.state.spoon_input;
+          if (!host[key]) host[key] = [];
+          const idx = host[key].indexOf(value);
+          if (idx >= 0) host[key].splice(idx,1); else host[key].push(value);
+          console.log('[input]', key, host[key]);
+        },
+
+        toggleAllergy(value){
+          const arr = this.state.child_profile.allergies;
+          const idx = arr.indexOf(value);
+          if (idx >= 0) arr.splice(idx,1); else arr.push(value);
+          console.log('[input]', 'allergies', arr);
+        },
+
+        setFocusLevel(level){
+          this.state.play_input.play_focus_level = level;
+          this.state.play_input.focus_minutes = level === '낮음' ? 3 : (level === '중간' ? 10 : 20);
+          document.querySelectorAll('[data-focuslevel]').forEach(e => e.classList.remove('active'));
+          const match = document.querySelector('[data-focuslevel="'+level+'"]');
+          if (match) match.classList.add('active');
+          document.getElementById('focusLevelText').textContent = '집중: ' + level;
+          console.log('[input]', 'play_focus_level', level, 'focus_minutes', this.state.play_input.focus_minutes);
+        },
+
+        buildRecommendPayload(){
+          return {
+            child_profile: this.state.child_profile,
+            spoon_input: this.state.spoon_input,
+            play_input: this.state.play_input
+          };
+        },
+
+        async submitRecommendFromUI(source){
+          const payload = this.buildRecommendPayload();
+          const statusEl = source === 'spoon' ? document.getElementById('spoonStatus') : document.getElementById('playStatus');
+          statusEl.textContent = '추천 생성 중...';
+
+          console.log('[/recommend payload]', payload);
+          try{
+            const res = await fetch('/recommend', {
+              method: 'POST',
+              headers: {'Content-Type':'application/json'},
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json().catch(()=>({}));
+            console.log('[/recommend response]', data);
+
+            if (!res.ok){
+              statusEl.textContent = '오류: ' + (data.detail || 'unknown');
+              statusEl.style.color = '#b42318';
+              return;
+            }
+
+            this.final_output = data.final_output;
+            this.renderResults();
+            this.resetChat();
+
+            statusEl.textContent = '완료! Chat 탭에서 물어봐도 돼요.';
+            statusEl.style.color = '#0f766e';
+            this.switchTab('chat');
+          }catch(e){
+            console.error(e);
+            statusEl.textContent = '오류: ' + String(e);
+            statusEl.style.color = '#b42318';
+          }
+        },
+
+        renderResults(){
+          const el = document.getElementById('dashCards');
+          const dashMissing = document.getElementById('dashMissing');
+          el.innerHTML = '';
+
+          if (!this.final_output){
+            dashMissing.style.display = 'block';
+            el.style.display = 'none';
+            return;
+          }
+
+          dashMissing.style.display = 'none';
+          el.style.display = 'flex';
+
+          const spoon = this.final_output.spoon || {};
+          const play = this.final_output.play || {};
+          const growth = this.final_output.growth || {};
+          const explanation = this.final_output.explanation || {};
+
+          const cards = [
+            {title:'Spoon', icon:'/assets/icon_spoon.svg', body: this.renderList(spoon.suggestions||[], spoon.notes||'')},
+            {title:'Play', icon:'/assets/icon_play.svg', body: this.renderList(play.suggestions||[], play.notes||'')},
+            {title:'Growth', icon:'/assets/icon_growth.svg', body: this.renderList(growth.observation_points||[], '')},
+            {title:'Explanation', icon:'/assets/icon_growth.svg', body: `
+              <div class="expDetails">
+                <details>
+                  <summary>설명 펼치기/접기</summary>
+                  <div class="muted" style="margin-top:8px;">${escapeHtml(explanation.explanation || '')}</div>
+                </details>
+              </div>
+            `}
+          ];
+
+          cards.forEach(c=>{
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `
+              <div class="card-top">
+                <div class="iconbox"><img src="${c.icon}" alt="" onerror="this.onerror=null; this.outerHTML='<div style=&quot;font-weight:900;&quot;>•</div>'"/></div>
+                <div class="result-title">${c.title}</div>
+              </div>
+              ${c.body}
+            `;
+            el.appendChild(card);
+          });
+        },
+
+        renderList(items, notes){
+          let html = '';
+          if (items && items.length){
+            html += '<ul style="margin:0; padding-left:18px;">';
+            items.forEach(it=>{ html += '<li style="margin:6px 0;">'+escapeHtml(it)+'</li>'; });
+            html += '</ul>';
+          }
+          if (notes){
+            html += '<div class="muted" style="margin-top:8px;">'+escapeHtml(notes)+'</div>';
+          }
+          return html || '<div class="muted">-</div>';
+        },
+
+        renderChatTop(){
+          const top = document.getElementById('chatTop');
+          const input = document.getElementById('chatUserMessage');
+          const sendBtn = document.getElementById('chatSendBtn');
+
+          // PoC 2차: Chat은 final_output 유무와 무관하게 항상 입력 가능.
+          if (top) top.innerHTML = '';
+          if (input) input.disabled = false;
+          if (sendBtn) sendBtn.disabled = false;
+        },
+
+        clearEmptyChatActions(){
+          const el = document.getElementById('chatEmptyActions');
+          if (el) el.remove();
+        },
+
+        renderEmptyChatState(){
+          const msgs = document.getElementById('chatMsgs');
+          if (!msgs) return;
+
+          // 메시지가 없는 “대화 시작 화면”을 렌더링합니다.
+          msgs.innerHTML = '';
+          msgs.appendChild(
+            this.bubble(
+              'system',
+              '안녕하세요. BabyCoach예요. 아이의 식사, 놀이, 교감에 대해 편하게 물어보세요.'
+            )
+          );
+
+          const actions = document.createElement('div');
+          actions.id = 'chatEmptyActions';
+          actions.className = 'emptyActions';
+
+          const fo = this.final_output;
+          const nudge = (fo && fo.nudge && fo.nudge.nudge_message) ? fo.nudge.nudge_message : '';
+          if (nudge){
+            const nudgeEl = document.createElement('div');
+            nudgeEl.className = 'todayNudge';
+            nudgeEl.textContent = nudge;
+            actions.appendChild(nudgeEl);
+          }
+
+          const btns = document.createElement('div');
+          btns.className = 'exampleButtons';
+          btns.innerHTML = `
+            <button type="button" class="exampleBtn" onclick="ui.askExample('밥을 잘 안 먹어요')">밥을 잘 안 먹어요</button>
+            <button type="button" class="exampleBtn" onclick="ui.askExample('요즘 놀이를 금방 싫어해요')">요즘 놀이를 금방 싫어해요</button>
+            <button type="button" class="exampleBtn" onclick="ui.askExample('상호작용을 더 늘리려면?')">상호작용을 더 늘리려면?</button>
+          `;
+          actions.appendChild(btns);
+
+          msgs.appendChild(actions);
+          msgs.scrollTop = msgs.scrollHeight;
+        },
+
+        resetChat(){
+          const msgs = document.getElementById('chatMsgs');
+          msgs.innerHTML = '';
+          document.getElementById('chatUserMessage').value = '';
+          document.getElementById('chatError').style.display = 'none';
+          this.renderEmptyChatState();
+        },
+
+        bubble(role, text){
+          const div = document.createElement('div');
+          const cls = role === 'user' ? 'user' : (role === 'system' ? 'system' : 'assistant');
+          div.className = 'bubble ' + cls;
+          div.textContent = text;
+          return div;
+        },
+
+        askExample(q){
+          document.getElementById('chatUserMessage').value = q;
+          this.submitChat();
+        },
+
+        askWhy(){
+          this.askExample('왜 이런 추천이 나왔어?');
+        },
+
+        async submitChat(){
+          const input = document.getElementById('chatUserMessage');
+          const msg = (input.value || '').trim();
+          if (!msg) return;
+
+          const msgs = document.getElementById('chatMsgs');
+          if (msgs.children.length === 0){
+            // 혹시라도 초기 상태가 비었으면 시스템 첫 메시지부터 복구합니다.
+            this.renderEmptyChatState();
+          }
+          this.clearEmptyChatActions();
+          msgs.appendChild(this.bubble('user', msg));
+          msgs.scrollTop = msgs.scrollHeight;
+          input.value = '';
+
+          const fo = this.final_output || this.fallbackFinalOutput();
+          const payload = {
+            final_output: fo,
+            state_summary: (fo && fo.chat_context_summary) ? fo.chat_context_summary : '',
+            user_message: msg
+          };
+
+          console.log('[/chat payload]', payload);
+          try{
+            const res = await fetch('/chat', {
+              method: 'POST',
+              headers: {'Content-Type':'application/json'},
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json().catch(()=>({}));
+            console.log('[/chat response]', data);
+
+            if (!res.ok){
+              const chatError = document.getElementById('chatError');
+              chatError.textContent = '오류: ' + (data.detail || 'unknown');
+              chatError.style.display = 'block';
+              return;
+            }
+            const assistant = data.assistant_message || ('오류: ' + (data.detail || 'unknown'));
+            msgs.appendChild(this.bubble('assistant', assistant));
+            msgs.scrollTop = msgs.scrollHeight;
+          }catch(e){
+            console.error(e);
+            const chatError = document.getElementById('chatError');
+            chatError.textContent = '오류: ' + String(e);
+            chatError.style.display = 'block';
+          }
+        }
+      };
+
+      function escapeHtml(s){
+        return String(s)
+          .replaceAll('&','&amp;')
+          .replaceAll('<','&lt;')
+          .replaceAll('>','&gt;')
+          .replaceAll('"','&quot;')
+          .replaceAll("'","&#039;");
+      }
+
+      window.addEventListener('keydown', (e)=>{
+        if (e.key === 'Enter'){
+          const active = document.activeElement;
+          if (active && active.id === 'chatUserMessage'){
+            ui.submitChat();
+          }
+        }
+      });
+
+      window.addEventListener('load', ()=>{
+        // initial hint sync
+        document.getElementById('proteinHint').textContent = '단백질: ' + ui.state.spoon_input.protein_count_3d;
+        document.getElementById('vegHint').textContent = '채소: ' + ui.state.spoon_input.vegetable_count_3d;
+        document.getElementById('divHint').textContent = '다양성: ' + ui.state.spoon_input.food_diversity_3d + '점';
+        document.getElementById('repeatHint').textContent = '반복: ' + ui.state.play_input.repeat_count;
+        document.getElementById('ledHint').textContent = '아이 주도: ' + ui.state.play_input.child_led_ratio.toFixed(2);
+
+        // Chat input state (useState-like) + console debug.
+        const chatInput = document.getElementById('chatUserMessage');
+        if (chatInput){
+          ui.chatState.message = chatInput.value || '';
+          chatInput.addEventListener('input', (e)=>{
+            ui.chatState.message = e.target.value;
+            console.log('[chat input]', ui.chatState.message);
+          });
+        }
+
+        // 대화 시작 화면(빈 상태)을 먼저 보여줍니다.
+        ui.renderEmptyChatState();
+      });
+    </script>
+  </body>
+</html>
+

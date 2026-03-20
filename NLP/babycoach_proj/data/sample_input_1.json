@@ -1,0 +1,24 @@
+{
+  "age_months": 10,
+  "weight_kg": 8.7,
+  "allergies": ["우유"],
+  "notes": "새로운 음식은 조심스럽게 도입 중",
+  "protein_count_3d": 2,
+  "vegetable_count_3d": 1,
+  "food_diversity_3d": 6,
+  "meal_refusal": false,
+  "reaction_flags": ["발진"],
+  "play_types": ["촉감 놀이", "쌓기 놀이"],
+  "focus_minutes": 7,
+  "repeat_count": 3,
+  "child_led_ratio": 0.4,
+  "refusal": false,
+  "parent_note": "손으로 만지고 흔드는 놀이를 좋아함",
+  "touch_count": 3,
+  "labeling_count": 2,
+  "joint_attention_count": 4,
+  "responsive_turns": 2,
+  "flat_response": false,
+  "parent_query": "단백질 식재료는 어떤 걸 말하는 거야?"
+}
+

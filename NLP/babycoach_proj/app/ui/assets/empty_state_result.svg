@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="22" fill="rgba(124,92,255,0.18)" stroke="#7c5cff" stroke-width="2"/>
+  <path d="M20 38 L26 32 L32 36 L44 24" fill="none" stroke="#00d4ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="32" y="56" text-anchor="middle" font-family="Arial" font-size="10" fill="#ffffff" font-weight="800">OK</text>
+</svg>
+

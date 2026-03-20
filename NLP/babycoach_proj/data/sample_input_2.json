@@ -1,0 +1,27 @@
+{
+  "age_months": 16,
+  "weight_kg": 10.9,
+  "allergies": [],
+  "notes": "",
+  "protein_count_3d": 1,
+  "vegetable_count_3d": 2,
+  "food_diversity_3d": 4,
+  "meal_refusal": true,
+  "reaction_flags": [],
+  "food_tag": "다양성 중심",
+  "meal_reaction": "거부 신호",
+  "play_types": ["넣기/빼기", "딸랑이 흔들기", "버튼 누르기"],
+  "focus_minutes": 4,
+  "play_focus_level": "낮음",
+  "repeat_count": 6,
+  "child_led_ratio": 0.75,
+  "refusal": true,
+  "parent_note": "오늘은 새 장난감에도 금방 관심을 잃는 편",
+  "touch_count": 5,
+  "labeling_count": 1,
+  "joint_attention_count": 2,
+  "responsive_turns": 1,
+  "flat_response": true,
+  "parent_query": "상호작용을 늘리려면 어떻게 해야 해?"
+}
+

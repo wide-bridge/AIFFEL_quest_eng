@@ -1,0 +1,2 @@
+"""BabyCoach PoC application package."""
+
