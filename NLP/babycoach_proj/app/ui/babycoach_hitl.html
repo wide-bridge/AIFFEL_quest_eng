@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BabyCoach · HITL 검토</title>
+  <style>
+    :root {
+      --bg: #f0f3fa;
+      --card: #fff;
+      --text: #1a2340;
+      --muted: #5c6b8a;
+      --line: rgba(45, 108, 223, 0.14);
+      --blue: #2d6cdf;
+      --blue-soft: #e8f0fd;
+      --green: #1fa060;
+      --green-soft: #e6f8ef;
+      --amber: #c27a00;
+      --amber-soft: #fff6e5;
+      --red: #c62828;
+      --red-soft: #fdeaea;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 4px 18px rgba(45, 108, 223, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
+    .top {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+      margin-bottom: 20px;
+    }
+    .brand { display: flex; gap: 12px; align-items: center; }
+    .logo {
+      width: 44px; height: 44px; border-radius: 12px; background: var(--blue-soft);
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .brand h1 { margin: 0; font-size: 18px; font-weight: 900; color: var(--blue); }
+    .brand p { margin: 4px 0 0; font-size: 12px; color: var(--muted); font-weight: 600; line-height: 1.4; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar button, .toolbar a.btn-link {
+      border: 1.5px solid var(--line); background: var(--card); border-radius: 999px;
+      padding: 8px 14px; font-size: 12px; font-weight: 800; cursor: pointer; color: var(--blue);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+      box-shadow: var(--shadow);
+    }
+    .toolbar button:hover, .toolbar a.btn-link:hover { background: var(--blue-soft); }
+    .badge {
+      font-size: 11px; font-weight: 900; padding: 4px 10px; border-radius: 999px;
+      background: var(--amber-soft); color: var(--amber); border: 1.5px solid rgba(194, 122, 0, 0.35);
+    }
+    .empty {
+      text-align: center; padding: 48px 20px; color: var(--muted); font-weight: 700; font-size: 14px;
+      background: var(--card); border-radius: var(--radius); border: 1.5px solid var(--line); box-shadow: var(--shadow);
+    }
+    .case {
+      background: var(--card); border-radius: var(--radius); border: 1.5px solid var(--line);
+      box-shadow: var(--shadow); margin-bottom: 18px; overflow: hidden;
+    }
+    .case-top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+      padding: 14px 16px; background: linear-gradient(135deg, var(--blue-soft), #fff);
+      border-bottom: 1.5px solid var(--line);
+    }
+    .case-id { font-size: 12px; font-weight: 800; color: var(--muted); }
+    .case-time { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 600; }
+    .clinic { font-size: 13px; font-weight: 900; color: var(--text); margin-top: 6px; }
+    .status-pill {
+      font-size: 11px; font-weight: 900; padding: 5px 12px; border-radius: 999px; white-space: nowrap;
+      border: 1.5px solid;
+    }
+    .status-pill.pending { background: var(--amber-soft); color: var(--amber); border-color: rgba(194, 122, 0, 0.4); }
+    .status-pill.approved { background: var(--green-soft); color: var(--green); border-color: rgba(31, 160, 96, 0.35); }
+    .status-pill.modified { background: var(--blue-soft); color: var(--blue); border-color: rgba(45, 108, 223, 0.3); }
+    .status-pill.rejected { background: var(--red-soft); color: var(--red); border-color: rgba(198, 40, 40, 0.3); }
+    .body { padding: 16px; }
+    .section-label {
+      font-size: 11px; font-weight: 900; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+    .grid3 {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;
+    }
+    @media (max-width: 560px) { .grid3 { grid-template-columns: 1fr 1fr; } }
+    .cell {
+      background: var(--bg); border: 1.5px solid rgba(45, 108, 223, 0.1); border-radius: var(--radius-sm);
+      padding: 10px; text-align: center;
+    }
+    .cell .k { font-size: 10px; font-weight: 800; color: var(--muted); }
+    .cell .v { font-size: 14px; font-weight: 900; margin-top: 4px; word-break: break-word; }
+    .panel {
+      background: linear-gradient(135deg, #f4f7ff, #eef8ff); border: 1.5px solid rgba(45, 108, 223, 0.18);
+      border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 12px;
+    }
+    .panel .row { font-size: 12px; font-weight: 600; color: #3a4a6a; line-height: 1.55; margin-bottom: 8px; }
+    .panel .row:last-child { margin-bottom: 0; }
+    .panel strong { color: var(--blue); font-weight: 900; display: block; margin-bottom: 4px; font-size: 11px; }
+    .chat-log {
+      max-height: 200px; overflow-y: auto; font-size: 12px; border: 1.5px solid var(--line);
+      border-radius: var(--radius-sm); padding: 10px; background: #fafbff; margin-bottom: 12px;
+    }
+    .msg { margin-bottom: 8px; padding: 8px 10px; border-radius: 8px; line-height: 1.5; }
+    .msg.user { background: var(--blue-soft); margin-left: 12px; }
+    .msg.assistant { background: #f0f2f7; margin-right: 12px; }
+    .msg .who { font-size: 10px; font-weight: 900; color: var(--muted); margin-bottom: 4px; }
+    label.lbl { display: block; font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 6px; }
+    textarea.ta {
+      width: 100%; min-height: 72px; padding: 10px 12px; border-radius: var(--radius-sm);
+      border: 1.5px solid rgba(45, 108, 223, 0.25); font-family: inherit; font-size: 13px; font-weight: 600;
+      resize: vertical; margin-bottom: 10px;
+    }
+    textarea.ta:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(45, 108, 223, 0.12); }
+    textarea.ta.comment-locked { background: #f4f6fb; cursor: default; }
+    .comment-actions {
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+      margin: -2px 0 12px 0;
+    }
+    .c-btn {
+      padding: 6px 12px; font-size: 11px; font-weight: 800; border-radius: 999px;
+      border: 1.5px solid var(--line); background: var(--card); color: var(--muted);
+      cursor: pointer; font-family: inherit; transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .c-btn:hover {
+      background: var(--bg); color: var(--text); border-color: rgba(45, 108, 223, 0.28);
+    }
+    .comment-feedback {
+      font-size: 11px; font-weight: 800; color: var(--green); margin: 0 0 10px 0;
+      min-height: 0; display: none;
+    }
+    .comment-feedback.show { display: block; }
+    .comment-feedback.err { color: var(--red); }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .actions button {
+      flex: 1; min-width: 100px; padding: 11px 12px; border-radius: var(--radius-sm); font-weight: 900;
+      font-size: 12px; cursor: pointer; border: 1.5px solid; font-family: inherit;
+    }
+    .actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .b-ap { background: var(--green-soft); border-color: rgba(31, 160, 96, 0.4); color: var(--green); }
+    .b-md { background: var(--blue-soft); border-color: rgba(45, 108, 223, 0.35); color: var(--blue); }
+    .b-rj { background: var(--red-soft); border-color: rgba(198, 40, 40, 0.3); color: var(--red); }
+    .history {
+      margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 11px; color: var(--muted);
+      font-weight: 600;
+    }
+    .history div { margin-bottom: 4px; }
+    .toast { font-size: 12px; font-weight: 800; color: var(--green); margin-top: 8px; display: none; }
+    .toast.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">🩺</div>
+        <div>
+          <h1>BabyCoach HITL</h1>
+          <p>보호자·베이비닥 상담 케이스 검토 · 승인 / 수정 / 반려 · 로컬 큐 (PoC)</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <span class="badge" id="queueCount">대기 0</span>
+        <button type="button" id="btnReload">새로고침</button>
+        <a class="btn-link" href="/">보호자 화면</a>
+      </div>
+    </div>
+    <div id="root"></div>
+  </div>
+  <script>
+    const STORAGE_KEY = 'babycoach_hitl_queue';
+    const KEY_LATEST_RESULT = 'babycoach_latest_hitl_result';
+    const KEY_RESULT_MAP = 'babycoach_hitl_result_map';
+    const KEY_HISTORY = 'babycoach_hitl_history';
+
+    /** 보호자 화면(/)에서 읽는 검토 결과 저장 */
+    function publishParentHitlResult(c) {
+      const result = {
+        case_id: c.case_id,
+        clinic_name: c.clinic_name || c.selected_clinic || '',
+        status: c.status,
+        doctor_comment: c.doctor_comment || '',
+        edited_guidance_for_parent: c.edited_guidance_for_parent || '',
+        reviewed_at: c.reviewed_at || new Date().toISOString(),
+      };
+      try {
+        localStorage.setItem(KEY_LATEST_RESULT, JSON.stringify(result));
+        let map = {};
+        try {
+          map = JSON.parse(localStorage.getItem(KEY_RESULT_MAP) || '{}');
+        } catch (e2) {
+          map = {};
+        }
+        if (typeof map !== 'object' || map === null || Array.isArray(map)) map = {};
+        map[c.case_id] = result;
+        localStorage.setItem(KEY_RESULT_MAP, JSON.stringify(map));
+        let hist = [];
+        try {
+          hist = JSON.parse(localStorage.getItem(KEY_HISTORY) || '[]');
+        } catch (e3) {
+          hist = [];
+        }
+        if (!Array.isArray(hist)) hist = [];
+        hist.push(Object.assign({}, result, { recorded_at: new Date().toISOString() }));
+        if (hist.length > 200) hist = hist.slice(-200);
+        localStorage.setItem(KEY_HISTORY, JSON.stringify(hist));
+      } catch (e) {
+        console.warn('[HITL] publishParentHitlResult failed', e);
+      }
+    }
+
+    function loadQueue() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const q = raw ? JSON.parse(raw) : [];
+        return Array.isArray(q) ? q : [];
+      } catch (e) {
+        console.warn(e);
+        return [];
+      }
+    }
+
+    function saveQueue(q) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(q));
+    }
+
+    function esc(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function statusLabel(st) {
+      const m = {
+        pending: '검토 대기',
+        approved: '승인됨',
+        modified: '수정 후 승인',
+        rejected: '반려',
+      };
+      return m[st] || st;
+    }
+
+    function appendHistory(c, action, comment) {
+      if (!Array.isArray(c.review_history)) c.review_history = [];
+      c.review_history.push({
+        at: new Date().toISOString(),
+        action,
+        comment: (comment || '').trim(),
+      });
+    }
+
+    function touchDoctorCommentEvent(c, type) {
+      if (!Array.isArray(c.doctor_comment_events)) c.doctor_comment_events = [];
+      c.doctor_comment_events.push({
+        at: new Date().toISOString(),
+        type: type,
+      });
+    }
+
+    function showCommentFeedback(realIdx, message, isErr) {
+      const el = document.getElementById('cf-' + realIdx);
+      if (!el) return;
+      el.textContent = message || '';
+      el.classList.toggle('err', !!isErr);
+      el.classList.add('show');
+      clearTimeout(el._hideT);
+      el._hideT = setTimeout(() => {
+        el.classList.remove('show');
+        el.textContent = '';
+        el.classList.remove('err');
+      }, 2800);
+    }
+
+    function render() {
+      const q = loadQueue();
+      const pending = q.filter((c) => c.status === 'pending').length;
+      document.getElementById('queueCount').textContent = '대기 ' + pending + ' · 전체 ' + q.length;
+      const root = document.getElementById('root');
+      if (!q.length) {
+        root.innerHTML =
+          '<div class="empty">저장된 HITL 케이스가 없습니다.<br><br>보호자 화면에서 베이비닥 상담 후 <strong>상담 검증받기</strong>를 누르면 이 큐에 쌓입니다.<br><br><a href="/">← 보호자 화면으로</a></div>';
+        return;
+      }
+      const sorted = q.slice().reverse();
+      root.innerHTML = sorted
+        .map((c, displayIdx) => {
+          const realIdx = q.length - 1 - displayIdx;
+          const bp = c.baby_profile || {};
+          const co = c.consult || {};
+          const msgs = Array.isArray(co.chat_messages) ? co.chat_messages : [];
+          const done = c.status !== 'pending';
+          const hist = (c.review_history || [])
+            .map((h) => `<div>· ${esc(h.at)} — ${esc(h.action)} ${h.comment ? '(' + esc(h.comment) + ')' : ''}</div>`)
+            .join('');
+          const chatHtml = msgs
+            .map((m) => {
+              const role = m.role === 'assistant' ? 'assistant' : 'user';
+              const who = role === 'user' ? '보호자' : 'AI(베이비닥)';
+              return `<div class="msg ${role}"><div class="who">${esc(who)}</div>${esc(m.text || '')}</div>`;
+            })
+            .join('');
+          return `
+<div class="case" data-idx="${realIdx}">
+  <div class="case-top">
+    <div>
+      <div class="case-id">${esc(c.case_id)}</div>
+      <div class="case-time">요청: ${esc(c.requested_at || '')}</div>
+      <div class="clinic">${esc(c.clinic_name || '병원 미선택')}</div>
+    </div>
+    <div class="status-pill ${esc(c.status || 'pending')}">${esc(statusLabel(c.status))}</div>
+  </div>
+  <div class="body">
+    <div class="section-label">아기 기본 · 건강</div>
+    <div class="grid3">
+      <div class="cell"><div class="k">이름</div><div class="v">${esc(bp.name || '—')}</div></div>
+      <div class="cell"><div class="k">생년월일</div><div class="v">${esc(bp.birth_date || '—')}</div></div>
+      <div class="cell"><div class="k">개월 / 체중</div><div class="v">${esc(String(bp.age_months ?? '—'))}개월 · ${esc(String(bp.weight_kg ?? '—'))}kg</div></div>
+    </div>
+    <div class="panel">
+      <div class="row"><strong>알레르기</strong>${esc((bp.allergies || []).join(', ') || '없음')}${bp.allergy_custom ? ' · 기타: ' + esc(bp.allergy_custom) : ''}</div>
+      <div class="row"><strong>메모</strong>${esc(bp.notes || '—')}</div>
+    </div>
+    <div class="section-label">상담 요약</div>
+    <div class="panel">
+      <div class="row"><strong>주호소</strong>${esc(co.chief_complaint || '—')}</div>
+      <div class="row"><strong>최근 질문</strong>${esc(co.user_message || '—')}</div>
+      <div class="row"><strong>AI 요약</strong>${esc(co.ai_summary || '—')}</div>
+      <div class="row"><strong>위험·주의</strong>${esc(co.risk_note || '—')}</div>
+      <div class="row"><strong>권장 조치(시스템)</strong>${esc(co.recommended_action || '—')}</div>
+    </div>
+    <div class="section-label">대화 로그</div>
+    <div class="chat-log">${chatHtml || '<div class="msg">기록 없음</div>'}</div>
+    ${
+      done
+        ? `<div class="panel"><div class="row"><strong>의사 코멘트</strong>${esc(c.doctor_comment || '—')}</div>` +
+          (c.edited_guidance_for_parent
+            ? `<div class="row"><strong>수정 안내안(보호자용)</strong>${esc(c.edited_guidance_for_parent)}</div>`
+            : '') +
+          `</div>`
+        : `
+    <label class="lbl" for="dc-${realIdx}">의사 코멘트</label>
+    <textarea class="ta${c.doctor_comment_locked ? ' comment-locked' : ''}" id="dc-${realIdx}" placeholder="검토 메모 · 반려 시 사유를 적어 주세요"${c.doctor_comment_locked ? ' readonly' : ''}>${esc(c.doctor_comment || '')}</textarea>
+    <div class="comment-actions">
+      <button type="button" class="c-btn" data-cact="save-comment" data-i="${realIdx}">저장</button>
+      <button type="button" class="c-btn" data-cact="edit-comment" data-i="${realIdx}">수정</button>
+      <button type="button" class="c-btn" data-cact="del-comment" data-i="${realIdx}">삭제</button>
+    </div>
+    <div class="comment-feedback" id="cf-${realIdx}" aria-live="polite"></div>
+    <label class="lbl" for="eg-${realIdx}">수정 후 보호자 안내안 (수정 승인 시 작성)</label>
+    <textarea class="ta" id="eg-${realIdx}" placeholder="승인하되 문구를 바꿀 때만 입력">${esc(c.edited_guidance_for_parent || '')}</textarea>
+    <div class="actions">
+      <button type="button" class="b-ap" data-act="approve" data-i="${realIdx}">승인</button>
+      <button type="button" class="b-md" data-act="modify" data-i="${realIdx}">수정 후 승인</button>
+      <button type="button" class="b-rj" data-act="reject" data-i="${realIdx}">반려</button>
+    </div>
+    <div class="toast" id="toast-${realIdx}">저장되었습니다.</div>
+    `
+    }
+    ${hist ? `<div class="history"><strong>이력</strong>${hist}</div>` : ''}
+  </div>
+</div>`;
+        })
+        .join('');
+
+      root.querySelectorAll('button[data-act]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const i = Number(btn.getAttribute('data-i'));
+          const act = btn.getAttribute('data-act');
+          const queue = loadQueue();
+          const c = queue[i];
+          if (!c || c.status !== 'pending') return;
+          const dc = document.getElementById('dc-' + i);
+          const eg = document.getElementById('eg-' + i);
+          const comment = dc ? dc.value.trim() : '';
+          const edited = eg ? eg.value.trim() : '';
+          if (act === 'reject' && !comment) {
+            alert('반려 시 의사 코멘트(사유)를 입력해 주세요.');
+            return;
+          }
+          if (act === 'modify' && !edited) {
+            alert('수정 후 승인은 보호자에게 전달할 안내문을 입력해 주세요.');
+            return;
+          }
+          if (act === 'approve') {
+            c.status = 'approved';
+            c.doctor_comment = comment;
+            c.reviewed_at = new Date().toISOString();
+            appendHistory(c, 'approved', comment);
+          } else if (act === 'modify') {
+            c.status = 'modified';
+            c.doctor_comment = comment;
+            c.edited_guidance_for_parent = edited;
+            c.reviewed_at = new Date().toISOString();
+            appendHistory(c, 'modified', comment + (edited ? ' | 안내안 수정' : ''));
+          } else if (act === 'reject') {
+            c.status = 'rejected';
+            c.doctor_comment = comment;
+            c.reviewed_at = new Date().toISOString();
+            appendHistory(c, 'rejected', comment);
+          }
+          publishParentHitlResult(c);
+          saveQueue(queue);
+          const t = document.getElementById('toast-' + i);
+          if (t) {
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+          }
+          render();
+        });
+      });
+
+      root.querySelectorAll('button[data-cact]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const i = Number(btn.getAttribute('data-i'));
+          const cact = btn.getAttribute('data-cact');
+          const queue = loadQueue();
+          const c = queue[i];
+          if (!c || c.status !== 'pending') return;
+          const dc = document.getElementById('dc-' + i);
+          if (!dc) return;
+
+          if (cact === 'save-comment') {
+            const text = dc.value.trim();
+            c.doctor_comment = text;
+            c.doctor_comment_updated_at = new Date().toISOString();
+            c.doctor_comment_locked = true;
+            touchDoctorCommentEvent(c, 'save');
+            saveQueue(queue);
+            dc.readOnly = true;
+            dc.classList.add('comment-locked');
+            showCommentFeedback(i, '의사 코멘트가 저장되었습니다.', false);
+            return;
+          }
+
+          if (cact === 'edit-comment') {
+            c.doctor_comment_locked = false;
+            touchDoctorCommentEvent(c, 'edit_unlock');
+            saveQueue(queue);
+            dc.readOnly = false;
+            dc.classList.remove('comment-locked');
+            dc.focus();
+            showCommentFeedback(i, '코멘트를 수정한 뒤 다시 저장할 수 있습니다.', false);
+            return;
+          }
+
+          if (cact === 'del-comment') {
+            if (!confirm('의사 코멘트를 삭제하시겠습니까?')) return;
+            c.doctor_comment = '';
+            delete c.doctor_comment_updated_at;
+            c.doctor_comment_locked = false;
+            touchDoctorCommentEvent(c, 'delete');
+            saveQueue(queue);
+            dc.value = '';
+            dc.readOnly = false;
+            dc.classList.remove('comment-locked');
+            showCommentFeedback(i, '의사 코멘트가 삭제되었습니다.', false);
+            return;
+          }
+        });
+      });
+    }
+
+    document.getElementById('btnReload').addEventListener('click', render);
+    render();
+  </script>
+</body>
+</html>

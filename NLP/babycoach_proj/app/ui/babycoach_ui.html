@@ -55,7 +55,7 @@
       .tabs{
         margin-top:16px;
         display:flex;
-        gap:10px;
+        gap:8px;
         flex-wrap:wrap;
         justify-content:flex-start;
       }
@@ -64,11 +64,11 @@
         background: rgba(255,255,255,.88);
         color:var(--text);
         border-radius:999px;
-        padding:12px 17px;
+        padding:11px 14px;
         font-weight:800;
         cursor:pointer;
         touch-action: manipulation;
-        min-height:46px;
+        min-height:44px;
         transition: all .22s ease;
       }
       .tabBtn:hover{
@@ -413,6 +413,95 @@
         overflow:hidden;
         text-overflow:ellipsis;
       }
+
+      /* 베이비닥 탭 */
+      #tabBabyDoc{
+        display:none;
+        flex-direction:column;
+        flex:1;
+        min-height:0;
+      }
+      .babyDocSelect{
+        width:100%;
+        margin-top:8px;
+        background: rgba(255,252,248,.96);
+        color:var(--text);
+        border:1.2px solid rgba(255,140,105,.20);
+        border-radius:16px;
+        padding:13px 13px;
+        font-weight:700;
+        font-size:14px;
+        outline:none;
+        box-sizing:border-box;
+      }
+      .babyDocDisclaimer{
+        margin-top:12px;
+        padding:14px 16px;
+        border-radius:18px;
+        border:1px solid rgba(255,179,71,.32);
+        background: linear-gradient(135deg, rgba(255,232,204,.45), rgba(207,237,227,.35));
+        font-size:12.5px;
+        line-height:1.65;
+        color:#4b5563;
+      }
+      .babyDocForward{
+        margin-top:14px;
+        padding:16px;
+        border-radius:var(--radius);
+        border:1px solid rgba(255,140,105,.22);
+        background: rgba(255,252,248,.96);
+        display:none;
+      }
+      .babyDocForward.visible{display:block;}
+      .babyDocForward .fwdTitle{
+        font-weight:900;
+        font-size:14px;
+        margin:0 0 10px 0;
+        line-height:1.45;
+        color:var(--text);
+      }
+      .babyDocHitlResult{
+        margin-top:14px;
+        padding:14px 14px;
+        border-radius:16px;
+        border:1px solid rgba(45,108,223,.2);
+        background: linear-gradient(135deg, rgba(220,235,255,.75), rgba(255,253,250,.96));
+        font-size:13px;
+        line-height:1.55;
+        color:var(--text);
+      }
+      .babyDocHitlResultHead{
+        font-weight:900;
+        font-size:13px;
+        margin-bottom:10px;
+        color:#2d6cdf;
+      }
+      .babyDocHitlResultWait{ color:var(--muted); font-weight:600; margin:0; font-size:12.5px; }
+      .babyDocHitlResultStatus{ font-size:12px; margin-bottom:6px; }
+      .babyDocHitlResultClinic{ font-size:12px; font-weight:800; margin-bottom:10px; }
+      .babyDocHitlResultComment .lbl,
+      .babyDocHitlResultEdited .lbl{
+        display:block; font-size:11px; font-weight:800; color:var(--muted); margin-bottom:4px;
+      }
+      .babyDocHitlResultComment .txt,
+      .babyDocHitlResultEdited .txt{
+        white-space:pre-wrap; word-break:break-word;
+        padding:10px 12px;
+        border-radius:12px;
+        background: rgba(255,255,255,.92);
+        border:1px solid rgba(45,108,223,.14);
+      }
+      .babyDocHitlResultTime{ font-weight:600; color:var(--muted); font-size:11px; }
+      .babyDocSymptomRow{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        margin-top:8px;
+      }
+      .babyDocSymptomRow .pill{
+        font-size:13px;
+        padding:10px 14px;
+      }
     </style>
   </head>
   <body>
@@ -432,6 +521,7 @@
         <button type="button" class="tabBtn" id="tabBtnSpoon" onclick="ui.switchTab('spoon')">이유식</button>
         <button type="button" class="tabBtn" id="tabBtnPlay" onclick="ui.switchTab('play')">놀이</button>
         <button type="button" class="tabBtn" id="tabBtnMore" onclick="ui.switchTab('more')">아기정보</button>
+        <button type="button" class="tabBtn" id="tabBtnBabyDoc" onclick="ui.switchTab('babydoc')"><span id="babyDocTabLabel">베이비닥</span></button>
       </div>
 
       <!-- CHAT -->
@@ -686,6 +776,62 @@
         </div>
       </div>
 
+      <!-- 베이비닥: 소아과 상담 보조 + 전달 흐름 -->
+      <div class="section" id="tabBabyDoc" style="display:none;">
+        <div>
+          <label>관심 소아과 (선택)</label>
+          <select id="babyDocClinicSelect" class="babyDocSelect" onchange="ui.setBabyDocClinic(this.value)">
+            <option value="">선택 안 함</option>
+            <option value="사랑소아과">사랑소아과</option>
+            <option value="태민소아과">태민소아과</option>
+            <option value="연세키즈소아과">연세키즈소아과</option>
+          </select>
+          <div class="note">병원을 선택하시면 이후 상담 내용을 해당 병원에서 전문가에게 도움을 받을 수 있어요.</div>
+        </div>
+
+        <div class="babyDocDisclaimer" id="babyDocDisclaimer">
+          베이비닥은 소아과 상담을 돕기 위한 보조 서비스입니다.<br />
+          응답은 참고용이며, 정확한 진단과 치료는 의료진 상담이 필요합니다. 의료 전문가를 대신할 수 없으며, 구체적인 증상에 대해서는 반드시 의료진의 진료를 받으시기 바랍니다.<br />
+          아이 상태가 걱정되시면 소아과 진료를 권장드립니다.
+        </div>
+
+        <div style="margin-top:14px;">
+          <div class="chatSubtitle" style="font-weight:800; margin-bottom:8px;">예시 증상</div>
+          <div class="babyDocSymptomRow">
+            <button type="button" class="pill" onclick="ui.babyDocExample('열이 나요')">열이 나요</button>
+            <button type="button" class="pill" onclick="ui.babyDocExample('기침을 해요')">기침을 해요</button>
+            <button type="button" class="pill" onclick="ui.babyDocExample('발진이 있어요')">발진이 있어요</button>
+            <button type="button" class="pill" onclick="ui.babyDocExample('설사를 해요')">설사를 해요</button>
+            <button type="button" class="pill" onclick="ui.babyDocExample('토를 자주 해요')">토를 자주 해요</button>
+          </div>
+        </div>
+
+        <div class="chatbox" style="margin-top:14px; min-height:240px;">
+          <div class="chatHead">
+            <div class="chatTitle">베이비닥</div>
+            <div class="chatSubtitle">증상이나 걱정되는 점을 입력해 보세요</div>
+          </div>
+          <div class="chatmsgs" id="babyDocMsgs"></div>
+          <div class="chatInputBar">
+            <div class="chatinputrow" style="margin-top:0;">
+              <input id="babyDocUserMessage" type="text" placeholder="증상이나 걱정되는 점을 입력해 주세요" />
+              <button type="button" class="btn small" id="babyDocSendBtn" onclick="ui.sendBabyDocMessage()">전송</button>
+            </div>
+            <div class="chatErrorLine" id="babyDocChatError"></div>
+          </div>
+        </div>
+
+        <div class="babyDocForward" id="babyDocForwardPanel">
+          <p class="fwdTitle" id="babyDocForwardTitle"></p>
+          <button type="button" class="btn primary" id="babyDocForwardBtn" onclick="ui.forwardConsultToClinic()">상담 내용 전달하기</button>
+          <div class="note" id="babyDocForwardNote" style="margin-top:10px;"></div>
+          <div id="babyDocHitlResultBox" class="babyDocHitlResult" style="display:none;" aria-live="polite">
+            <div class="babyDocHitlResultHead">의료진 검토 결과</div>
+            <div id="babyDocHitlResultBody" class="babyDocHitlResultBody"></div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <script>
@@ -694,6 +840,15 @@
         babyInfoTab: 'health',
         final_output: null,
         chatState: { message: '' },
+        /** 베이비닥 탭: 소아과 선택, 상담 메시지, 전달 payload */
+        babyDoc: {
+          selectedClinic: null,
+          chatMessages: [],
+          latestConsultPayload: null,
+          latestHitlCase: null,
+          lastForwardedCaseId: null,
+          assistantReplyCount: 0,
+        },
         babyInfo: {
           health: { name:'', birth_date:'', baby_photo_name:'', baby_photo_url:'', allergy_custom:'' },
           wisdom: { likes:[], traits:[], dev_focus:[] },
@@ -740,17 +895,344 @@
         },
 
         switchTab(t){
-          const map = {chat:'tabChat', spoon:'tabSpoon', play:'tabPlay', more:'tabMore'};
+          const map = {chat:'tabChat', spoon:'tabSpoon', play:'tabPlay', more:'tabMore', babydoc:'tabBabyDoc'};
           Object.entries(map).forEach(([k,id])=>{
-            document.getElementById(id).style.display = (k===t) ? 'block' : 'none';
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (k === 'babydoc'){
+              el.style.display = (k===t) ? 'flex' : 'none';
+            }else{
+              el.style.display = (k===t) ? 'block' : 'none';
+            }
           });
           document.getElementById('tabBtnChat').classList.toggle('active', t==='chat');
           document.getElementById('tabBtnSpoon').classList.toggle('active', t==='spoon');
           document.getElementById('tabBtnPlay').classList.toggle('active', t==='play');
           document.getElementById('tabBtnMore').classList.toggle('active', t==='more');
+          document.getElementById('tabBtnBabyDoc').classList.toggle('active', t==='babydoc');
           this.tab = t;
           if (t === 'more'){
             this.loadBabyProfile();
+          }
+          if (t === 'babydoc'){
+            this.renderBabyDocTab();
+          }
+        },
+
+        /** 상단 탭 표시용(최대 5자). selectedClinic·payload는 전체 명칭 유지 */
+        babyDocClinicTabDisplay(fullName){
+          const s = String(fullName || '').trim();
+          if (!s) return '';
+          return s.slice(0, 5);
+        },
+
+        /** 하단 버튼 표시용(최대 10자). selectedClinic·payload는 전체 명칭 유지 */
+        babyDocClinicButtonDisplay(fullName){
+          const s = String(fullName || '').trim();
+          if (!s) return '';
+          return s.slice(0, 10);
+        },
+
+        refreshBabyDocTabLabel(){
+          const el = document.getElementById('babyDocTabLabel');
+          if (!el) return;
+          const v = this.babyDoc.selectedClinic;
+          if (!v){
+            el.textContent = '베이비닥';
+            return;
+          }
+          const short = this.babyDocClinicTabDisplay(v);
+          el.textContent = '베이비닥(' + short + ')';
+        },
+
+        setBabyDocClinic(value){
+          const v = String(value || '').trim();
+          this.babyDoc.selectedClinic = v ? v : null;
+          this.refreshBabyDocTabLabel();
+          const note = document.getElementById('babyDocForwardNote');
+          const btn = document.getElementById('babyDocForwardBtn');
+          if (note){ delete note.dataset.forwarded; }
+          if (btn) btn.disabled = false;
+          this.updateBabyDocForwardPanel();
+        },
+
+        renderBabyDocTab(){
+          this.refreshBabyDocTabLabel();
+          this.updateBabyDocForwardPanel();
+          this.syncBabyDocHitlResultDisplay();
+        },
+
+        syncBabyDocHitlResultDisplay(){
+          const box = document.getElementById('babyDocHitlResultBox');
+          const body = document.getElementById('babyDocHitlResultBody');
+          if (!box || !body) return;
+          if (this.babyDoc.assistantReplyCount < 1){
+            box.style.display = 'none';
+            body.innerHTML = '';
+            return;
+          }
+          let caseId = (this.babyDoc.latestHitlCase && this.babyDoc.latestHitlCase.case_id) || this.babyDoc.lastForwardedCaseId;
+          if (!caseId && typeof localStorage !== 'undefined'){
+            try{
+              caseId = localStorage.getItem('babycoach_parent_last_case_id');
+            }catch(e){}
+          }
+          if (!caseId){
+            box.style.display = 'none';
+            body.innerHTML = '';
+            return;
+          }
+          let map = {};
+          try{
+            map = JSON.parse(localStorage.getItem('babycoach_hitl_result_map') || '{}');
+          }catch(e){
+            map = {};
+          }
+          let latest = null;
+          try{
+            latest = JSON.parse(localStorage.getItem('babycoach_latest_hitl_result') || 'null');
+          }catch(e){
+            latest = null;
+          }
+          let res = map[caseId];
+          if (!res && latest && latest.case_id === caseId) res = latest;
+          box.style.display = 'block';
+          const stLabel = { approved: '승인', modified: '수정 후 승인', rejected: '반려' };
+          if (!res || res.status === 'pending'){
+            body.innerHTML = '<p class="babyDocHitlResultWait">의료진 검토 결과를 기다리는 중입니다. 잠시 후 이 탭을 다시 열어 확인해 주세요.</p>';
+            return;
+          }
+          const sl = stLabel[res.status] || res.status;
+          let html = '<div class="babyDocHitlResultStatus">처리: <strong>' + escapeHtml(sl) + '</strong>';
+          if (res.reviewed_at){
+            html += ' <span class="babyDocHitlResultTime">(' + escapeHtml(res.reviewed_at) + ')</span>';
+          }
+          html += '</div>';
+          if (res.clinic_name){
+            html += '<div class="babyDocHitlResultClinic">' + escapeHtml(res.clinic_name) + '</div>';
+          }
+          html += '<div class="babyDocHitlResultComment"><span class="lbl">의료진 메시지</span><div class="txt">' +
+            escapeHtml(res.doctor_comment || '(코멘트 없음)') + '</div></div>';
+          if (res.status === 'modified' && res.edited_guidance_for_parent){
+            html += '<div class="babyDocHitlResultEdited"><span class="lbl">보호자 안내(수정)</span><div class="txt">' +
+              escapeHtml(res.edited_guidance_for_parent) + '</div></div>';
+          }
+          body.innerHTML = html;
+        },
+
+        babyDocExample(text){
+          const input = document.getElementById('babyDocUserMessage');
+          if (input) input.value = text;
+          this.sendBabyDocMessage();
+        },
+
+        updateBabyDocForwardPanel(){
+          const panel = document.getElementById('babyDocForwardPanel');
+          const title = document.getElementById('babyDocForwardTitle');
+          const btn = document.getElementById('babyDocForwardBtn');
+          const note = document.getElementById('babyDocForwardNote');
+          if (!panel || !title || !btn || !note) return;
+          if (this.babyDoc.assistantReplyCount < 1){
+            panel.classList.remove('visible');
+            panel.style.display = 'none';
+            note.textContent = '';
+            btn.style.display = 'none';
+            this.syncBabyDocHitlResultDisplay();
+            return;
+          }
+          panel.style.display = 'block';
+          panel.classList.add('visible');
+          const clinic = this.babyDoc.selectedClinic;
+          if (clinic){
+            title.style.display = 'block';
+            title.textContent = '이 상담 내용을 ' + clinic + '에 전달해 검토를 받아보시겠어요?';
+            btn.style.display = 'block';
+            btn.disabled = false;
+            const btnClinic = this.babyDocClinicButtonDisplay(clinic);
+            btn.textContent = btnClinic + '에 상담 검증받기';
+            if (!note.dataset.forwarded) note.textContent = '';
+          }else{
+            title.style.display = 'none';
+            title.textContent = '';
+            btn.style.display = 'none';
+            note.textContent = '상담 내용을 전달하려면 먼저 관심 소아과를 선택해 주세요.';
+          }
+          this.syncBabyDocHitlResultDisplay();
+        },
+
+        generateHitlCaseId(){
+          const d = new Date();
+          const y = d.getFullYear();
+          const mo = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          const seq = String(Math.floor(Math.random() * 9000) + 1000);
+          return 'BC-HITL-' + y + mo + day + '-' + seq;
+        },
+
+        deriveHitlRiskNote(lastAsst, meta){
+          const st = (meta && meta.status) ? String(meta.status) : '';
+          const t = (lastAsst && lastAsst.text) ? String(lastAsst.text) : '';
+          if (st === 'symptom_guidance'){
+            return '일반 증상 안내 응답입니다. 고열 지속, 호흡 곤란, 의식 변화 등 동반 시 진료 필요 여부를 확인해 주세요.';
+          }
+          if (st === 'insufficient_evidence'){
+            return '문서 근거가 부족한 응답입니다. 면담 시 추가 문진이 필요할 수 있습니다.';
+          }
+          if (/38\.5|고열|호흡|경련|탈수/i.test(t)){
+            return '응답에 응급·주의 키워드가 포함될 수 있습니다. 임상 판단에 따라 진료 권고 여부를 검토해 주세요.';
+          }
+          return 'AI 응답 상태: ' + (st || 'ok') + '. 임상 맥락에 맞는지 확인해 주세요.';
+        },
+
+        deriveHitlRecommendedAction(meta){
+          const st = (meta && meta.status) ? String(meta.status) : '';
+          if (st === 'ok') return '검색 자료 기반 안내 확인 후, 필요 시 소아과 진료 권고 문구 적절성 검토';
+          if (st === 'symptom_guidance') return '일반 안내이므로 증상 심화 시 진료 연계 문구 검토';
+          if (st === 'insufficient_evidence') return '추가 정보 수집 또는 대면 진료 안내 검토';
+          return '전문가 검토 요청';
+        },
+
+        /**
+         * HITL 큐용 케이스 payload. selectedClinic·아기정보는 전체 값 유지.
+         */
+        buildHitlCasePayload(){
+          const h = this.babyInfo.health || {};
+          const cp = this.state.child_profile || {};
+          const msgs = this.babyDoc.chatMessages || [];
+          const firstUser = msgs.find((m) => m.role === 'user');
+          const lastUser = [...msgs].reverse().find((m) => m.role === 'user');
+          const lastAsst = [...msgs].reverse().find((m) => m.role === 'assistant');
+          const meta = (lastAsst && lastAsst.meta) ? lastAsst.meta : {};
+          const allergies = Array.isArray(cp.allergies) ? cp.allergies.slice() : [];
+          const clinic = this.babyDoc.selectedClinic || '';
+          return {
+            case_id: this.generateHitlCaseId(),
+            requested_at: new Date().toISOString(),
+            clinic_name: clinic,
+            selected_clinic: clinic,
+            status: 'pending',
+            doctor_comment: '',
+            baby_profile: {
+              name: String(h.name || '').trim(),
+              birth_date: String(h.birth_date || '').trim(),
+              age_months: Number(cp.age_months) || 0,
+              weight_kg: Number(cp.weight_kg) || 0,
+              allergies: allergies,
+              allergy_custom: String(h.allergy_custom || '').trim(),
+              notes: String(cp.notes || '').trim(),
+            },
+            consult: {
+              chief_complaint: firstUser ? String(firstUser.text || '') : '',
+              user_message: lastUser ? String(lastUser.text || '') : '',
+              chat_messages: msgs.map((m) => ({
+                role: m.role,
+                text: m.text,
+                ts: m.ts,
+                meta_status: m.meta && m.meta.status,
+                retrieved_doc_ids: m.meta && m.meta.retrieved_doc_ids,
+                sources: m.meta && m.meta.sources,
+              })),
+              ai_summary: lastAsst ? String(lastAsst.text || '').slice(0, 800) : '',
+              risk_note: this.deriveHitlRiskNote(lastAsst, meta),
+              recommended_action: this.deriveHitlRecommendedAction(meta),
+            },
+            review_history: [],
+          };
+        },
+
+        saveHitlCaseToLocalQueue(hitlCase){
+          const key = 'babycoach_hitl_queue';
+          try{
+            const raw = localStorage.getItem(key);
+            const q = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(q)) throw new Error('invalid queue');
+            q.push(hitlCase);
+            localStorage.setItem(key, JSON.stringify(q));
+            return true;
+          }catch(e){
+            console.warn('[HITL] localStorage 저장 실패', e);
+            return false;
+          }
+        },
+
+        forwardConsultToClinic(){
+          const clinic = this.babyDoc.selectedClinic;
+          if (!clinic) return;
+          const lastAsst = [...this.babyDoc.chatMessages].reverse().find((m) => m.role === 'assistant');
+          const meta = (lastAsst && lastAsst.meta) ? lastAsst.meta : {};
+          const hitlCase = this.buildHitlCasePayload();
+          this.saveHitlCaseToLocalQueue(hitlCase);
+          this.babyDoc.latestHitlCase = hitlCase;
+          const payload = {
+            clinic,
+            messages: this.babyDoc.chatMessages.slice(),
+            createdAt: new Date().toISOString(),
+            source: 'babydoc_ui_mock',
+            retrieved_doc_ids: meta.retrieved_doc_ids || [],
+            sources: meta.sources || [],
+            status: meta.status || null,
+            hitl_case: hitlCase,
+          };
+          console.log('[forwardConsultToClinic]', payload);
+          this.babyDoc.latestConsultPayload = payload;
+          this.babyDoc.lastForwardedCaseId = hitlCase.case_id;
+          try{
+            localStorage.setItem('babycoach_parent_last_case_id', hitlCase.case_id);
+          }catch(e){}
+          const note = document.getElementById('babyDocForwardNote');
+          const btn = document.getElementById('babyDocForwardBtn');
+          if (note){
+            note.textContent = '베이비닥 상담 내용이 ' + clinic + '에 전달되었습니다.';
+            note.dataset.forwarded = '1';
+          }
+          if (btn) btn.disabled = true;
+          this.syncBabyDocHitlResultDisplay();
+        },
+
+        async sendBabyDocMessage(){
+          const input = document.getElementById('babyDocUserMessage');
+          const errEl = document.getElementById('babyDocChatError');
+          const btn = document.getElementById('babyDocSendBtn');
+          const msg = (input && input.value) ? input.value.trim() : '';
+          if (!msg) return;
+          const msgs = document.getElementById('babyDocMsgs');
+          if (!msgs) return;
+          if (errEl){ errEl.style.display = 'none'; errEl.textContent = ''; }
+          const ts = new Date().toISOString();
+          this.babyDoc.chatMessages.push({ role: 'user', text: msg, ts });
+          msgs.appendChild(this.bubble('user', msg));
+          msgs.scrollTop = msgs.scrollHeight;
+          if (input) input.value = '';
+          if (btn) btn.disabled = true;
+          try{
+            const res = await fetch('/babydoc/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question: msg }),
+            });
+            const data = await res.json().catch(()=>({}));
+            console.log('[/babydoc/chat]', data);
+            let answer = '';
+            if (!res.ok){
+              answer = '지금은 안내를 불러오지 못했어요. 참고용 정보이며, 아이 상태가 걱정되시면 소아과 진료를 권장드립니다.';
+            }else{
+              answer = data.answer || '제공된 정보만으로는 정확히 답변하기 어렵습니다. 아이 상태가 걱정되시면 소아과 진료를 권장드립니다.';
+            }
+            const ts2 = new Date().toISOString();
+            this.babyDoc.chatMessages.push({ role: 'assistant', text: answer, ts: ts2, meta: data });
+            msgs.appendChild(this.bubble('assistant', answer));
+            msgs.scrollTop = msgs.scrollHeight;
+            this.babyDoc.assistantReplyCount += 1;
+            this.updateBabyDocForwardPanel();
+            this.syncBabyDocHitlResultDisplay();
+          }catch(e){
+            console.error(e);
+            if (errEl){
+              errEl.textContent = '연결 오류가 났어요. 네트워크를 확인해 주세요.';
+              errEl.style.display = 'block';
+            }
+          }finally{
+            if (btn) btn.disabled = false;
           }
         },
 
@@ -1429,6 +1911,9 @@
           if (active && active.id === 'chatUserMessage'){
             ui.submitChat();
           }
+          if (active && active.id === 'babyDocUserMessage'){
+            ui.sendBabyDocMessage();
+          }
         }
       });
 
@@ -1455,6 +1940,21 @@
         ui.renderEmptyChatState();
         ui.updateBabyInfoActionUI();
         ui.loadBabyProfile();
+        try{
+          const sid = localStorage.getItem('babycoach_parent_last_case_id');
+          if (sid) ui.babyDoc.lastForwardedCaseId = sid;
+        }catch(e){}
+        ui.syncBabyDocHitlResultDisplay();
+
+        window.addEventListener('storage', (e) => {
+          if (!e.key) return;
+          if (e.key === 'babycoach_latest_hitl_result' || e.key === 'babycoach_hitl_result_map' || e.key === 'babycoach_hitl_history'){
+            ui.syncBabyDocHitlResultDisplay();
+          }
+        });
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) ui.syncBabyDocHitlResultDisplay();
+        });
       });
     </script>
   </body>

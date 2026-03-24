@@ -4,4 +4,8 @@ langgraph
 openai
 python-dotenv
 pytest
+numpy
+rank-bm25
+sentence-transformers
+torch
 
