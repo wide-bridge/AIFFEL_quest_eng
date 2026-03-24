@@ -1,0 +1,6 @@
+.env
+.venv/
+./app/agents/__pycache__/
+.python-version
+./app/api/__pycache__/
+./app/__pycache__/
