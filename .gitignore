@@ -1,2 +1,21 @@
+# MLOps
+MLOps/MLOps01/models/
+MLOps/MLOps01/data/
+
+# Model files
+*.pt
+*.pth
+*.onnx
+
+# Python
+__pycache__/
+*.pyc
+
+# Jupyter
 .ipynb_checkpoints/
 
+# Env
+.env
+
+# DB
+*.db
